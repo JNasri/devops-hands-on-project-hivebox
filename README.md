@@ -50,6 +50,56 @@ Here is a pre-start checklist:
 
 ---
 
-## Implementation
+# **Implementation**
+ 
 
-** ADD YOUR IMPLEMENTATION DOCUMENTATION HERE **
+<br>**Phase 1: Welcome to HiveBox!**
+ 
+In this phase, I have set up the required preparation steps to start the HiveBox project. The steps are:
+ 
+
+*   Created /HiveBox folder in my personal machine.
+     
+*   Forked the repository [devops-hands-on-project-hivebox](https://github.com/DevOpsHiveHQ/devops-hands-on-project-hivebox/fork) into the folder.
+     
+*   Created a project for the repository using the Kanban Template.
+     
+
+## **Phase 2: DevOps Core: Git, Coding and Docker!**
+ 
+This phase builds up the foundation of the project workflow.
+ 
+**2.1:** Setup Git, Docker and VS Code (already done)
+ 
+**2.2:** Created a python file to print the current version (v0.0.1)
+ 
+
+    # Version follows Semantic Versioning (SemVer)
+    __version__ = "0.0.1"
+    
+    # Main function to run the application
+    def main():
+        # Display the application version and exit
+        print(f"HiveBox App Version: v{__version__}")
+    
+    
+    # Entry point of the application
+    if __name__ == "__main__":
+        main()
+
+**2.3:** Created a Dockerfile to build an image out of the code. Run the command `docker build -t hivebox:v0.0.1 .` . (`-t` is for tagging the image with a name "hivebox:v0.0.1" and the dot in the end is to point to the directory of the files (current directory in this case)
+ 
+
+    # Use an official lightweight Python image
+    FROM python:3.11-slim
+    
+    # Set the working directory inside the container
+    WORKDIR /app
+    
+    # Copy your local main.py file into the container's working directory
+    COPY main.py .
+    
+    # Set the default command to execute your script
+    ENTRYPOINT ["python", "main.py"]
+
+**2.4:** Run the command `docker run --rm hivebox:v0.0.1` to create a container out of the image and test if it will print the version (`--rm` automatically cleans up and deletes the container instance after it stops running to not take a lot of space in my machine)
