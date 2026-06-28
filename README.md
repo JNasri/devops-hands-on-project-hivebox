@@ -1,58 +1,7 @@
-[![Dynamic DevOps Roadmap](https://img.shields.io/badge/Dynamic_DevOps_Roadmap-559e11?style=for-the-badge&logo=Vercel&logoColor=white)](https://devopsroadmap.io/getting-started/)
-[![Community](https://img.shields.io/badge/Join_Community-%23FF6719?style=for-the-badge&logo=substack&logoColor=white)](https://newsletter.devopsroadmap.io/subscribe)
-[![Telegram Group](https://img.shields.io/badge/Telegram_Group-%232ca5e0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/DevOpsHive/985)
-[![Fork on GitHub](https://img.shields.io/badge/Fork_On_GitHub-%2336465D?style=for-the-badge&logo=github&logoColor=white)](https://github.com/DevOpsHiveHQ/devops-hands-on-project-hivebox/fork)
-
-# HiveBox - DevOps End-to-End Hands-On Project
-
-<p align="center">
-  <a href="https://devopsroadmap.io/projects/hivebox" style="display: block; padding: .5em 0; text-align: center;">
-    <img alt="HiveBox - DevOps End-to-End Hands-On Project" border="0" width="90%" src="https://devopsroadmap.io/img/projects/hivebox-devops-end-to-end-project.png" />
-  </a>
-</p>
-
-> [!CAUTION]
-> **[Fork](https://github.com/DevOpsHiveHQ/devops-hands-on-project-hivebox/fork)** this repo, and create PRs in your fork, **NOT** in this repo!
-
-> [!TIP]
-> If you are looking for the full roadmap, including this project, go back to the [getting started](https://devopsroadmap.io/getting-started) page.
-
-This repository is the starting point for [HiveBox](https://devopsroadmap.io/projects/hivebox/), the end-to-end hands-on project.
-
-You can fork this repository and start implementing the [HiveBox](https://devopsroadmap.io/projects/hivebox/) project. HiveBox project follows the same Dynamic MVP-style mindset used in the [roadmap](https://devopsroadmap.io/).
-
-The project aims to cover the whole Software Development Life Cycle (SDLC). That means each phase will cover all aspects of DevOps, such as planning, coding, containers, testing, continuous integration, continuous delivery, infrastructure, etc.
-
-Happy DevOpsing ♾️
-
-## Before you start
-
-Here is a pre-start checklist:
-
-- ⭐ <a target="_blank" href="https://github.com/DevOpsHiveHQ/dynamic-devops-roadmap">Star the **roadmap** repo</a> on GitHub for better visibility.
-- ✉️ <a target="_blank" href="https://newsletter.devopsroadmap.io/subscribe">Join the community</a> for the project community activities, which include mentorship, job posting, online meetings, workshops, career tips and tricks, and more.
-- 🌐 <a target="_blank" href="https://t.me/DevOpsHive/985">Join the Telegram group</a> for interactive communication.
-
-## Preparation
-
-- [Create GitHub account](https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github) (if you don't have one), then [fork this repository](https://github.com/DevOpsHiveHQ/devops-hands-on-project-hivebox/fork) and start from there.
-- [Create GitHub project board](https://docs.github.com/en/issues/planning-and-tracking-with-projects/creating-projects/creating-a-project) for this repository (use `Kanban` template).
-- Each phase should be presented as a pull request against the `main` branch. Don’t push directly to the main branch!
-- Document as you go. Always assume that someone else will read your project at any phase.
-- You can get senseBox IDs by checking the [openSenseMap](https://opensensemap.org/) website. Use 3 senseBox IDs close to each other (you can use the following [5eba5fbad46fb8001b799786](https://opensensemap.org/explore/5eba5fbad46fb8001b799786), [5c21ff8f919bf8001adf2488](https://opensensemap.org/explore/5c21ff8f919bf8001adf2488), and [5ade1acf223bd80019a1011c](https://opensensemap.org/explore/5ade1acf223bd80019a1011c)). Just copy the IDs, you will need them in the next steps.
-
-<br/>
-<p align="center">
-  <a href="https://devopsroadmap.io/projects/hivebox/" imageanchor="1">
-    <img src="https://img.shields.io/badge/Get_Started_Now-559e11?style=for-the-badge&logo=Vercel&logoColor=white" />
-  </a><br/>
-</p>
-
----
-
 # **Implementation**
  
 
+## ![image]()
 <br>**Phase 1: Welcome to HiveBox!**
  
 In this phase, I have set up the required preparation steps to start the HiveBox project. The steps are:
@@ -60,14 +9,14 @@ In this phase, I have set up the required preparation steps to start the HiveBox
 
 *   Created /HiveBox folder in my personal machine.
      
-*   Forked the repository [devops-hands-on-project-hivebox](https://github.com/DevOpsHiveHQ/devops-hands-on-project-hivebox/fork) into the folder.
+*   Forked the repository `devops-hands-on-project-hivebox` into the folder.
      
 *   Created a project for the repository using the Kanban Template.
      
 
 ## **Phase 2: DevOps Core: Git, Coding and Docker!**
  
-This phase builds up the foundation of the project workflow.
+This phase builds the foundation of the project workflow.
  
 **2.1:** Setup Git, Docker and VS Code (already done)
  
@@ -103,3 +52,152 @@ This phase builds up the foundation of the project workflow.
     ENTRYPOINT ["python", "main.py"]
 
 **2.4:** Run the command `docker run --rm hivebox:v0.0.1` to create a container out of the image and test if it will print the version (`--rm` automatically cleans up and deletes the container instance after it stops running to not take a lot of space in my machine)
+ 
+
+## **Phase 3: Lint, Test and CI workflow!**
+ 
+ This phase focuses on building the foundation of a Flask web app. It only contains two endpoints:
+ 
+1- (/version) : returns the current version of the code.
+ 
+
+    @app.route("/version")
+    def print_version():
+        """Return the current application version."""
+        return __version__
+
+2- (/temperature) : uses \[OpenSenseMapAPI\]([https://docs.opensensemap.org/](https://docs.opensensemap.org/) ) to return the average temperature of all senseBoxes in eu-central region.
+ 
+
+    @app.route("/temperature", methods=["GET"])
+    def get_average_temperature():
+        """Fetch temperature measurements and calculate the global average."""
+        try:
+            # 1. Define our 1-hour expiration window in UTC
+            end_time = datetime.now(timezone.utc)
+            start_time = end_time - timedelta(hours=1)
+            # 2. Build parameter queries for openSenseMap.
+            # Wide bbox bounding box filter (e.g. Central Europe).
+            # This reduces data size so the openSenseMap API returns clean JSON
+            # instead of massive CSV text.
+            query_params = {
+                "phenomenon": "Temperatur",
+                "bbox": "5.5,47.2,15.2,55.1",
+                "from-date": start_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "to-date": end_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "format": "json",
+            }
+            # 3. Request data payload directly
+            response = requests.get(
+                SENSORS_DATA_URL,
+                params=query_params,
+                timeout=15,
+            )
+            response.raise_for_status()
+            # 4. Check if content type is actually JSON before parsing.
+            if "application/json" not in response.headers.get("Content-Type", ""):
+                return jsonify(
+                    {
+                        "status": "error",
+                        "message": (
+                            "Upstream API returned raw text/CSV instead of "
+                            "expected JSON structure."
+                        ),
+                    }
+                ), 502
+            measurements = response.json()
+            # 5. Filter and process values safely
+            valid_temperatures = []
+            for entry in measurements:
+                if not isinstance(entry, dict):
+                    continue
+                raw_val = entry.get("value")
+                if raw_val is None:
+                    continue
+                try:
+                    valid_temperatures.append(float(raw_val))
+                except (ValueError, TypeError):
+                    continue
+            # 6. Handle empty dataset scenario
+            if not valid_temperatures:
+                return jsonify(
+                    {
+                        "status": "error",
+                        "message": (
+                            "No valid temperature readings found within the "
+                            "last 1 hour inside this region."
+                        ),
+                    }
+                ), 503
+            # 7. Compute mathematical average
+            global_average = sum(valid_temperatures) / len(valid_temperatures)
+            return jsonify(
+                {
+                    "average_temperature": round(global_average, 2),
+                    "unit": "°C",
+                    "active_sensors_calculated": len(valid_temperatures),
+                    "time_window_checked": "Past 1 hour",
+                }
+            ), 200
+        except requests.exceptions.RequestException as exc:
+            return jsonify(
+                {
+                    "error": "Failed to connect to openSenseMap platform",
+                    "details": str(exc),
+                }
+            ), 502
+
+**3.1: -> 3.3:** Learning about various technologies
+ 
+1- Pylint (linter for python code)
+ 
+2- Hadolint (linter for Dockerfile)
+ 
+3- \[Conventional commits\]([https://www.conventionalcommits.org/en/v1.0.0/](https://www.conventionalcommits.org/en/v1.0.0/) )
+ 
+4- Write the code implementation of the two endpoints above as a simple flask app in the main python file.
+ 
+
+**3.4:** Create multiple files related to testing and CI workflow using Action
+ 
+
+*    *requirements.txt file*  : includes the version of all dependencies in the application. used in the dockerfile.
+     
+*   add my first unit test to make sure the version endpoints works as expected:
+     
+    
+        import main
+        def test_version_endpoint_returns_current_version():
+            # create Flask's test client out of main
+            client = main.app.test_client()
+            # call the /version endpoint , store response
+            response = client.get('/version')
+        
+            # test 1 : does it return 200 ?
+            assert response.status_code == 200
+            # test 2 : does it return the current version ?
+            assert response.data.decode('utf-8') == main.__version__
+    
+
+*    *ci.yml*  file: workflow in Github action to create a VM in order to lint, test, build and run the code.
+     
+*    *scorecard.yml:*  [openSSF](https://securityscorecards.dev/#using-the-github-action)  , an open source tool for finding security issues in the code workflow
+     
+
+**3.5:** document all these above steps and push the code as a PR into the repository using the following commands:
+ 
+
+    1- check curent branch
+    ~ git branch 
+    
+    2- create a new branch (to work on new feature)
+    ~ git branch -b "branch name"
+    **Note** : if branch already created : ~ git checkout "branch name" 
+    
+    3- start working, each step we do add/commit
+    ~ git add . + git commit -m "number: comment"
+    
+    4- after the whole phase is done, we push our work to the branch
+    ~ git puch -u origin "branch name"
+    
+    5- go the Pull Requests in the repo and create a new PR of the last commit
