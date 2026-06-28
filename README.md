@@ -103,3 +103,21 @@ This phase builds up the foundation of the project workflow.
     ENTRYPOINT ["python", "main.py"]
 
 **2.4:** Run the command `docker run --rm hivebox:v0.0.1` to create a container out of the image and test if it will print the version (`--rm` automatically cleans up and deletes the container instance after it stops running to not take a lot of space in my machine)
+
+
+
+## **Phase 3: Lint, Test and CI workflow!**
+ 
+This phase focuses on building the foundation of a Flask web app. It only contains two endpoints:
+1- (/version) : returns the current version of the code
+2- (/temperature) : uses [OpenSenseMapAPI](https://docs.opensensemap.org/) to return the average temperature of all senseBoxes in eu-central region.
+ 
+**3.1:** -> **3.3:** : Learning about various technologies, including:
+1- Pylint (linter for python code)
+2- Hadolint (linter for Dockerfile)
+3- [Conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
+4- Write the flask code in the main.py + add 2 endpoints with their code implementation:
+
+
+ 
+**2.2:** Created a python file to print the current version (v0.0.1)
