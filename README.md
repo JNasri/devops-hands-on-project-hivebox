@@ -53,7 +53,7 @@ Here is a pre-start checklist:
 # **Implementation**
  
 
-<br>**Phase 1: Welcome to HiveBox!**
+## **Phase 1: Welcome to HiveBox!**
  
 In this phase, I have set up the required preparation steps to start the HiveBox project. The steps are:
  
@@ -62,7 +62,7 @@ In this phase, I have set up the required preparation steps to start the HiveBox
      
 *   Forked the repository [devops-hands-on-project-hivebox](https://github.com/DevOpsHiveHQ/devops-hands-on-project-hivebox/fork) into the folder.
      
-*   Created a project for the repository using the Kanban Template.
+*   Created a project in GitHub for the repository using the Kanban Template.
      
 
 ## **Phase 2: DevOps Core: Git, Coding and Docker!**
