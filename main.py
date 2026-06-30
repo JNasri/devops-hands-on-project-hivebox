@@ -119,14 +119,15 @@ def get_average_temperature():
                 ), 503
 
             # 7. Compute mathematical average
-            global_average = sum(valid_temperatures) / len(valid_temperatures)
+            global_average = round(sum(valid_temperatures) / len(valid_temperatures),2)
 
             return jsonify(
                 {
-                    "average_temperature": round(global_average, 2),
+                    "average_temperature": global_average,
                     "unit": config.get("TEMPERATURE_UNIT"),
                     "active_sensors_calculated": len(valid_temperatures),
                     "time_window_checked": "Past 1 hour",
+                    "status": "Too Cold" if global_average <= 10 else "Good" if global_average < 36 else "Too Hot"
                 }
             ), 200
 
