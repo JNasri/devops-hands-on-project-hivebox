@@ -3,18 +3,20 @@
 # @author: Youssef Nasri
 
 from datetime import datetime, timedelta, timezone
-
+from dotenv import dotenv_values
 import requests
 from flask import Flask, jsonify
+
+# Load .env file into a dictionary called config
+config = dotenv_values(".env")
+
 
 # Version follows Semantic Versioning (SemVer)
 __version__ = "0.0.1"
 
+
 # create instance of Flask class using the default module __name__
 app = Flask(__name__)
-
-# URL for openSenseMap query endpoint
-SENSORS_DATA_URL = "https://api.opensensemap.org/boxes/data"
 
 
 @app.route("/version")
@@ -27,7 +29,9 @@ def print_version():
 def get_average_temperature():
     """Fetch temperature measurements and calculate the global average."""
     try:
-        # 1. Define our 1-hour expiration window in UTC
+        # 1. Define our 1-hour expiration window in UTC :
+        # this is done by defining the current time (end_time)
+        # and subtract it from the past 1 hour to get info of the last 1-hour window
         end_time = datetime.now(timezone.utc)
         start_time = end_time - timedelta(hours=1)
 
@@ -36,8 +40,8 @@ def get_average_temperature():
         # This reduces data size so the openSenseMap API returns clean JSON
         # instead of massive CSV text.
         query_params = {
-            "phenomenon": "Temperatur",
-            "bbox": "5.5,47.2,15.2,55.1",
+            "phenomenon": config.get("TEMPERATURE_PHENOMENON"),
+            "bbox": config.get("TEMPERATURE_BBOX"),
             "from-date": start_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
             "to-date": end_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
             "format": "json",
@@ -45,9 +49,9 @@ def get_average_temperature():
 
         # 3. Request data payload directly
         response = requests.get(
-            SENSORS_DATA_URL,
+            config.get("TEMPERATURE_API_URL"),
             params=query_params,
-            timeout=15,
+            timeout=int(config.get("TEMPERATURE_REQUEST_TIMEOUT")),
         )
         response.raise_for_status()
 
@@ -99,7 +103,7 @@ def get_average_temperature():
         return jsonify(
             {
                 "average_temperature": round(global_average, 2),
-                "unit": "°C",
+                "unit": config.get("TEMPERATURE_UNIT"),
                 "active_sensors_calculated": len(valid_temperatures),
                 "time_window_checked": "Past 1 hour",
             }
