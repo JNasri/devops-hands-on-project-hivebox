@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hivebox
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: hivebox.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hivebox
+                port:
+                  number: 80

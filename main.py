@@ -22,7 +22,7 @@ app = Flask(__name__)
 __version__ = "0.0.1"
 
 
-# Define Metrics
+# Define Prometheus Metrics
 metric_fetch_counter = Counter('metric_fetch_counter', 'Number of times /metric was fetched')
 @app.route("/metrics", methods=["GET"])
 def get_prometheus_metrics():
@@ -61,8 +61,8 @@ def get_average_temperature():
             # This reduces data size so the openSenseMap API returns clean JSON
             # instead of massive CSV text.
             query_params = {
-                "phenomenon": config.get("TEMPERATURE_PHENOMENON"),
-                "bbox": config.get("TEMPERATURE_BBOX"),
+                "phenomenon": config.get("TEMPERATURE_PHENOMENON", "Temperatur"),
+                "bbox": config.get("TEMPERATURE_BBOX", "5.5,47.2,15.2,55.1"),
                 "from-date": start_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "to-date": end_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "format": "json",
@@ -70,9 +70,9 @@ def get_average_temperature():
 
             # 3. Request data payload directly
             response = requests.get(
-                config.get("TEMPERATURE_API_URL"),
+                config.get("TEMPERATURE_API_URL", "https://api.opensensemap.org/boxes/data"),
                 params=query_params,
-                timeout=int(config.get("TEMPERATURE_REQUEST_TIMEOUT")),
+                timeout=30,
             )
             response.raise_for_status()
 
@@ -124,7 +124,7 @@ def get_average_temperature():
             return jsonify(
                 {
                     "average_temperature": global_average,
-                    "unit": config.get("TEMPERATURE_UNIT"),
+                    "unit": config.get("TEMPERATURE_UNIT", "°C"),
                     "active_sensors_calculated": len(valid_temperatures),
                     "time_window_checked": "Past 1 hour",
                     "status": "Too Cold" if global_average <= 10 else "Good" if global_average < 36 else "Too Hot"
