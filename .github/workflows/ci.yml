@@ -37,6 +37,7 @@ jobs:
         run: docker build -t hivebox:test .
 
       - name: Run unit tests
+        # Run pytest with the -q option for quiet output
         run: pytest -q
 
       - name: Verify version endpoint
