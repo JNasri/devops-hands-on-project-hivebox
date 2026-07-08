@@ -3,11 +3,11 @@
 import sys
 from pathlib import Path
 
-import main  # noqa: E402
-
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+import main  # noqa: E402
 
 
 def test_version_endpoint_returns_current_version():
