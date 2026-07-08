@@ -1,0 +1,20 @@
+# kind configuration file to run the ingress-Nginx controller in the kind cluster.
+# This configuration will create a single control-plane node
+# with the ingress-ready label and map ports 80 and 443 from the host to the container.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+    kubeadmConfigPatches:
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "ingress-ready=true"
+    extraPortMappings:
+      - containerPort: 80
+        hostPort: 80
+        protocol: TCP
+      - containerPort: 443
+        hostPort: 443
+        protocol: TCP

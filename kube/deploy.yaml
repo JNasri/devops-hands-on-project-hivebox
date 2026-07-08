@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hivebox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hivebox
+  template:
+    metadata:
+      labels:
+        app: hivebox
+    spec:
+      containers:
+        - name: hivebox
+          image: hivebox:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          env:
+            - name: TEMPERATURE_API_URL
+              value: "https://api.opensensemap.org/boxes/data"
+            - name: TEMPERATURE_PHENOMENON
+              value: "Temperatur"
+            - name: TEMPERATURE_BBOX
+              value: "5.5,47.2,15.2,55.1"
+            - name: TEMPERATURE_UNIT
+              value: "°C"
+            - name: TEMPERATURE_REQUEST_TIMEOUT
+              value: "15"
