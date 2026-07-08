@@ -4,14 +4,24 @@
 
 # datetime : used to calcluate the 1-hour window requirmenets
 from datetime import datetime, timedelta, timezone
+
 # flask : web app runtime env + jsonify to return json files
-from flask import Flask, jsonify, Response
+from flask import Flask, Response, jsonify
+
 # requests : library to send HTTP requests
 import requests
+
 # detenv: used to get env vars from .env file
 from dotenv import dotenv_values
-# prometheus client to measure metrics from our application 
-from prometheus_client import CONTENT_TYPE_LATEST, generate_latest, Counter, Histogram
+
+# prometheus client to measure metrics from our application
+from prometheus_client import (
+    CONTENT_TYPE_LATEST,
+    Counter,
+    generate_latest,
+    Histogram,
+)
+
 # Load .env file into a dictionary called config
 config = dotenv_values(".env")
 
@@ -23,43 +33,55 @@ __version__ = "0.0.1"
 
 
 # Define Prometheus Metrics
-metric_fetch_counter = Counter('metric_fetch_counter', 'Number of times /metric was fetched')
+metric_fetch_counter = Counter(
+    "metric_fetch_counter",
+    "Number of times /metric was fetched",
+)
+
+
 @app.route("/metrics", methods=["GET"])
 def get_prometheus_metrics():
-    '''Return Prometheus-formatted metrics for the application.'''
+    """Return Prometheus-formatted metrics for the application."""
     metric_fetch_counter.inc()
     return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
 
 
 # Define Metrics
-version_fetch_counter = Counter('version_fetch_counter', 'Number of times /version was fetched')
+version_fetch_counter = Counter(
+    "version_fetch_counter",
+    "Number of times /version was fetched",
+)
+
+
 @app.route("/version")
 def print_version():
     """Return the current application version."""
     version_fetch_counter.inc()
     return __version__
 
+
 # Define Metrics that will be monitored and show them in /metrics
-temp_fetch_counter = Counter('temp_fetch_counter', 'Number of times /temperature was fetched')
-temp_fetch_duration = Histogram('temp_fetch_duration','Time taken to proccess /temperature')
+temp_fetch_counter = Counter(
+    "temp_fetch_counter",
+    "Number of times /temperature was fetched",
+)
+
+temp_fetch_duration = Histogram(
+    "temp_fetch_duration",
+    "Time taken to proccess /temperature",
+)
+
+
 @app.route("/temperature", methods=["GET"])
 def get_average_temperature():
     """Fetch temperature measurements and calculate the global average."""
-    # counter of how many /temp fetches
     temp_fetch_counter.inc()
-    # histogram of how much time the fetch took
+
     with temp_fetch_duration.time():
         try:
-            # 1. Define our 1-hour expiration window in UTC :
-            # this is done by defining the current time (end_time)
-            # and subtract it from the past 1 hour to get info of the last 1-hour window
             end_time = datetime.now(timezone.utc)
             start_time = end_time - timedelta(hours=1)
 
-            # 2. Build parameter queries for openSenseMap.
-            # Wide bbox bounding box filter (e.g. Central Europe).
-            # This reduces data size so the openSenseMap API returns clean JSON
-            # instead of massive CSV text.
             query_params = {
                 "phenomenon": config.get("TEMPERATURE_PHENOMENON", "Temperatur"),
                 "bbox": config.get("TEMPERATURE_BBOX", "5.5,47.2,15.2,55.1"),
@@ -68,15 +90,16 @@ def get_average_temperature():
                 "format": "json",
             }
 
-            # 3. Request data payload directly
             response = requests.get(
-                config.get("TEMPERATURE_API_URL", "https://api.opensensemap.org/boxes/data"),
+                config.get(
+                    "TEMPERATURE_API_URL",
+                    "https://api.opensensemap.org/boxes/data",
+                ),
                 params=query_params,
                 timeout=30,
             )
             response.raise_for_status()
 
-            # 4. Check if content type is actually JSON before parsing.
             if "application/json" not in response.headers.get("Content-Type", ""):
                 return jsonify(
                     {
@@ -89,8 +112,6 @@ def get_average_temperature():
                 ), 502
 
             measurements = response.json()
-
-            # 5. Filter and process values safely
             valid_temperatures = []
 
             for entry in measurements:
@@ -106,7 +127,6 @@ def get_average_temperature():
                 except (ValueError, TypeError):
                     continue
 
-            # 6. Handle empty dataset scenario
             if not valid_temperatures:
                 return jsonify(
                     {
@@ -118,8 +138,7 @@ def get_average_temperature():
                     }
                 ), 503
 
-            # 7. Compute mathematical average
-            global_average = round(sum(valid_temperatures) / len(valid_temperatures),2)
+            global_average = round(sum(valid_temperatures) / len(valid_temperatures), 2)
 
             return jsonify(
                 {
@@ -127,7 +146,13 @@ def get_average_temperature():
                     "unit": config.get("TEMPERATURE_UNIT", "°C"),
                     "active_sensors_calculated": len(valid_temperatures),
                     "time_window_checked": "Past 1 hour",
-                    "status": "Too Cold" if global_average <= 10 else "Good" if global_average < 36 else "Too Hot"
+                    "status": (
+                        "Too Cold"
+                        if global_average <= 10
+                        else "Good"
+                        if global_average < 36
+                        else "Too Hot"
+                    ),
                 }
             ), 200
 
@@ -138,7 +163,6 @@ def get_average_temperature():
                     "details": str(exc),
                 }
             ), 502
-
 
 
 if __name__ == "__main__":
