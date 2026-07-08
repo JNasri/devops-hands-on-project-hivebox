@@ -83,7 +83,9 @@ def get_average_temperature():
             start_time = end_time - timedelta(hours=1)
 
             query_params = {
-                "phenomenon": config.get("TEMPERATURE_PHENOMENON", "Temperatur"),
+                "phenomenon": config.get(
+                    "TEMPERATURE_PHENOMENON", "Temperatur"
+                ),
                 "bbox": config.get("TEMPERATURE_BBOX", "5.5,47.2,15.2,55.1"),
                 "from-date": start_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "to-date": end_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -100,7 +102,10 @@ def get_average_temperature():
             )
             response.raise_for_status()
 
-            if "application/json" not in response.headers.get("Content-Type", ""):
+            if (
+                "application/json"
+                not in response.headers.get("Content-Type", "")
+            ):
                 return jsonify(
                     {
                         "status": "error",
@@ -138,7 +143,9 @@ def get_average_temperature():
                     }
                 ), 503
 
-            global_average = round(sum(valid_temperatures) / len(valid_temperatures), 2)
+            global_average = round(
+                sum(valid_temperatures) / len(valid_temperatures), 2
+            )
 
             return jsonify(
                 {

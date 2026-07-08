@@ -11,7 +11,7 @@ if str(ROOT) not in sys.path:
 
 
 def test_version_endpoint_returns_current_version():
-    '''Test that the /version endpoint returns the current application version.'''
+    '''Test that the /version endpoint returns the current app version.'''
     client = main.app.test_client()
     response = client.get('/version')
 
@@ -20,7 +20,7 @@ def test_version_endpoint_returns_current_version():
 
 
 def test_temperature_endpoint_returns_expected_structure(monkeypatch):
-    '''Test that the /temperature endpoint returns the expected JSON structure.'''
+    '''Test that the /temperature endpoint returns the expected JSON.'''
 
     class FakeResponse:
         '''A fake response object to simulate requests.get() behavior.'''
@@ -38,11 +38,13 @@ def test_temperature_endpoint_returns_expected_structure(monkeypatch):
             return self._payload
 
     def fake_get(url, params=None, timeout=None):
-        '''A fake requests.get() function that returns a FakeResponse with sample data.'''
-        return FakeResponse([
-            {"value": 20},
-            {"value": 30},
-        ])
+        '''A fake requests.get() function that returns a FakeResponse.'''
+        return FakeResponse(
+            [
+                {"value": 20},
+                {"value": 30},
+            ]
+        )
 
     monkeypatch.setattr(main.requests, "get", fake_get)
 
