@@ -147,19 +147,20 @@ def get_average_temperature():
                 sum(valid_temperatures) / len(valid_temperatures), 2
             )
 
+            status = "Unknown"
+            if global_average < 10:
+                status = "Too Cold"
+            elif global_average < 36:
+                status = "Good"
+            else:
+                status = "Too Hot"
             return jsonify(
                 {
                     "average_temperature": global_average,
                     "unit": config.get("TEMPERATURE_UNIT", "°C"),
                     "active_sensors_calculated": len(valid_temperatures),
                     "time_window_checked": "Past 1 hour",
-                    "status": (
-                        "Too Cold"
-                        if global_average <= 10
-                        else "Good"
-                        if global_average < 36
-                        else "Too Hot"
-                    ),
+                    "status": status,
                 }
             ), 200
 

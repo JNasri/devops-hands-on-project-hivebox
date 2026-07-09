@@ -33,6 +33,13 @@ jobs:
           flake8 main.py tests
           docker run --rm -i hadolint/hadolint < Dockerfile
 
+      - name: Scan Kubernetes manifests with Terrascan
+        uses: tenable/terrascan-action@main
+        with:
+          iac_dir: kube
+          iac_type: k8s
+          only_warn: false
+
       - name: Build Docker image
         run: docker build -t hivebox:test .
 
