@@ -34,7 +34,7 @@ jobs:
           docker run --rm -i hadolint/hadolint < Dockerfile
 
       - name: Scan Kubernetes manifests with Terrascan
-        uses: tenable/terrascan-action@main
+        uses: tenable/terrascan-action@a4b0f7ec5fb3c4c66b8e76d824d958002f6ce12c
         with:
           iac_dir: kube
           iac_type: k8s
