@@ -35,7 +35,9 @@ from prometheus_client import (
 
 # Load .env file and allow container environment variables to override it.
 dotenv_config = {
-    key: value for key, value in dotenv_values(".env").items() if value is not None
+    key: value
+    for key, value in dotenv_values(".env").items()
+    if value is not None
 }
 env_config = {
     key: value
@@ -56,6 +58,7 @@ metric_fetch_counter = Counter(
     "metric_fetch_counter",
     "Number of times /metric was fetched",
 )
+
 
 @app.route("/metrics", methods=["GET"])
 def get_prometheus_metrics():
@@ -88,6 +91,7 @@ temp_fetch_duration = Histogram(
     "temp_fetch_duration",
     "Time taken to proccess /temperature",
 )
+
 
 def get_temperature_snapshot():
     """Call openSenseMap and return a computed temperature snapshot."""
@@ -129,7 +133,9 @@ def get_temperature_snapshot():
             continue
 
     if not valid_temperatures:
-        raise ValueError("No valid temperature readings found")
+        raise ValueError(
+            "No valid temperature readings found"
+        )
 
     global_average = round(sum(valid_temperatures) / len(valid_temperatures), 2)
 
@@ -167,7 +173,10 @@ def get_average_temperature():
                 }
             ), 502
         except ValueError as exc:
-            return jsonify({"status": "error", "message": str(exc)}), 503
+            return jsonify(
+            {"status": "error", "message": str(exc)}
+        ), 503
+
 
 def upload_snapshot_to_minio(snapshot):
     """Upload the temperature snapshot to MinIO object storage."""
@@ -182,9 +191,13 @@ def upload_snapshot_to_minio(snapshot):
     if not client.bucket_exists(bucket):
         client.make_bucket(bucket)
 
-    object_name = f"temperature/{datetime.now(timezone.utc).strftime('%Y-%m-%dT%H-%M-%S')}.json"
+    object_name = (
+        "temperature/"
+        f"{datetime.now(timezone.utc).strftime('%Y-%m-%dT%H-%M-%S')}.json"
+    )
     data = json.dumps(snapshot).encode("utf-8")
     client.put_object(bucket, object_name, io.BytesIO(data), len(data))
+
 
 @app.route("/store", methods=["POST"])
 def store_data():
@@ -196,7 +209,9 @@ def store_data():
     except Exception as exc:
         return jsonify({"message": "Snapshot storage failed", "error": str(exc)}), 502
 
-    return jsonify({"message": "Snapshot stored successfully", "data": snapshot}), 200
+    return jsonify(
+        {"message": "Snapshot stored successfully", "data": snapshot}
+    ), 200
 
 
 def periodic_store():
