@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hivebox
+  name: hivebox-worker
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: hivebox
-      component: api
+      component: worker
   template:
     metadata:
       labels:
         app: hivebox
-        component: api
+        component: worker
     spec:
       automountServiceAccountToken: false
       securityContext:
@@ -20,39 +20,22 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - name: hivebox
+        - name: worker
           image: hivebox:latest
           imagePullPolicy: IfNotPresent
-          ports:
-            - name: http
-              containerPort: 5000
+          command: ["python", "main.py", "worker"]
           envFrom:
             - configMapRef:
                 name: hivebox-config
             - secretRef:
                 name: hivebox-secrets
-          readinessProbe:
-            httpGet:
-              path: /readyz
-              port: http
-            initialDelaySeconds: 5
-            periodSeconds: 15
-            timeoutSeconds: 4
-            failureThreshold: 3
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: http
-            initialDelaySeconds: 10
-            periodSeconds: 30
-            timeoutSeconds: 3
           resources:
             requests:
-              cpu: 100m
-              memory: 128Mi
+              cpu: 50m
+              memory: 96Mi
             limits:
-              cpu: 500m
-              memory: 256Mi
+              cpu: 300m
+              memory: 192Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:

@@ -1,0 +1,12 @@
+.git/
+.venv
+__pycache__
+.pytest_cache
+*.pyc
+git-workflow.txt
+.env
+.vscode
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl

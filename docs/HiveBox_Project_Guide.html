@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A concise visual guide to the HiveBox DevOps learning project by Josef Nasri."
+    />
+    <title>HiveBox — DevOps project brief</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --night: #101b17;
+        --forest: #173d2c;
+        --leaf: #68a96b;
+        --acid: #d8f34a;
+        --cream: #f3efdf;
+        --paper: #faf8ef;
+        --rust: #d8673e;
+        --line: rgba(16, 27, 23, 0.17);
+        --display: "Archivo Black", "Franklin Gothic Heavy", sans-serif;
+        --body: "Newsreader", Georgia, serif;
+        --mono: "IBM Plex Mono", Consolas, monospace;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+      body {
+        margin: 0;
+        color: var(--night);
+        background: var(--cream);
+        font: 18px/1.55 var(--body);
+        overflow-x: hidden;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        pointer-events: none;
+        opacity: 0.14;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitchTiles'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+      }
+      a { color: inherit; }
+
+      .progress {
+        position: fixed;
+        inset: 0 auto auto 0;
+        z-index: 100;
+        width: 0;
+        height: 4px;
+        background: var(--acid);
+        box-shadow: 0 0 16px rgba(216, 243, 74, 0.7);
+      }
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 72px;
+        padding: 0 max(24px, calc((100vw - 1180px) / 2));
+        color: var(--cream);
+        border-bottom: 1px solid rgba(243, 239, 223, 0.15);
+        background: rgba(16, 27, 23, 0.92);
+        backdrop-filter: blur(14px);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        font: 500 13px/1 var(--mono);
+        text-decoration: none;
+        letter-spacing: 0.04em;
+      }
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 36px;
+        aspect-ratio: 1;
+        color: var(--night);
+        background: var(--acid);
+        clip-path: polygon(25% 7%, 75% 7%, 100% 50%, 75% 93%, 25% 93%, 0 50%);
+        font: 600 10px/1 var(--mono);
+      }
+      nav { display: flex; align-items: center; gap: 20px; }
+      nav a {
+        color: rgba(243, 239, 223, 0.72);
+        font: 500 11px/1 var(--mono);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      nav a:hover, nav a.active { color: var(--acid); }
+      .pdf-link {
+        padding: 10px 13px;
+        color: var(--night) !important;
+        background: var(--acid);
+        border-radius: 2px;
+      }
+
+      section { width: min(1180px, calc(100% - 48px)); margin-inline: auto; }
+      .eyebrow, .section-label, .tag {
+        font: 600 11px/1.2 var(--mono);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+      .eyebrow { color: var(--acid); }
+      .section-label { color: var(--rust); }
+      h1, h2, h3, p { margin-top: 0; }
+      h1, h2, h3 { text-wrap: balance; }
+      h1 {
+        margin: 22px 0 28px;
+        color: var(--cream);
+        font: 400 clamp(55px, 8vw, 112px)/0.9 var(--display);
+        letter-spacing: -0.065em;
+      }
+      h1 em { color: var(--acid); font-style: normal; }
+      h2 {
+        margin-bottom: 18px;
+        font: 400 clamp(38px, 5vw, 70px)/0.94 var(--display);
+        letter-spacing: -0.055em;
+      }
+      h3 { font: 400 20px/1.05 var(--display); letter-spacing: -0.025em; }
+      .lede { max-width: 650px; font-size: 23px; line-height: 1.42; }
+      .muted { color: rgba(243, 239, 223, 0.68); }
+
+      .hero-shell { position: relative; overflow: hidden; background: var(--night); }
+      .hero-shell::after {
+        content: "";
+        position: absolute;
+        right: -13vw;
+        bottom: -24vw;
+        width: 52vw;
+        aspect-ratio: 1;
+        border: 2px solid rgba(216, 243, 74, 0.22);
+        transform: rotate(30deg);
+        box-shadow: 0 0 0 70px rgba(104, 169, 107, 0.05), 0 0 0 140px rgba(104, 169, 107, 0.035);
+      }
+      .hero {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+        gap: clamp(48px, 8vw, 110px);
+        align-items: end;
+        min-height: calc(100vh - 72px);
+        padding-block: 88px 78px;
+      }
+      .hero-copy { max-width: 820px; }
+      .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
+      .button {
+        display: inline-flex;
+        align-items: center;
+        min-height: 48px;
+        padding: 0 18px;
+        border: 1px solid rgba(243, 239, 223, 0.24);
+        color: var(--cream);
+        font: 600 12px/1 var(--mono);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+      }
+      .button:hover { transform: translateY(-3px); background: var(--cream); color: var(--night); }
+      .button.primary { border-color: var(--acid); color: var(--night); background: var(--acid); }
+      .hero-aside { padding: 26px; border-top: 5px solid var(--acid); background: var(--forest); }
+      .hero-aside p { margin-bottom: 23px; color: rgba(243, 239, 223, 0.72); }
+      .fact { padding: 16px 0; border-top: 1px solid rgba(243, 239, 223, 0.16); }
+      .fact strong { display: block; color: var(--acid); font: 400 30px/1 var(--display); }
+      .fact span { color: rgba(243, 239, 223, 0.62); font: 500 10px/1 var(--mono); text-transform: uppercase; }
+
+      .chapter { padding-block: clamp(88px, 11vw, 150px); }
+      .chapter-head { display: grid; grid-template-columns: 0.7fr 1.3fr; gap: 60px; margin-bottom: 56px; }
+      .chapter-head p { max-width: 610px; font-size: 21px; }
+      .flow-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; background: var(--night); }
+      .flow-step { position: relative; min-height: 220px; padding: 26px 22px; background: var(--paper); }
+      .flow-step::after {
+        content: "→";
+        position: absolute;
+        top: 26px;
+        right: -13px;
+        z-index: 2;
+        display: grid;
+        place-items: center;
+        width: 26px;
+        height: 26px;
+        color: var(--night);
+        background: var(--acid);
+        border-radius: 50%;
+        font: 600 14px/1 var(--mono);
+      }
+      .flow-step:last-child::after { display: none; }
+      .step-no { color: var(--rust); font: 600 11px/1 var(--mono); }
+      .flow-step h3 { margin: 44px 0 13px; }
+      .flow-step p { margin: 0; color: #526059; font-size: 16px; line-height: 1.45; }
+      .cache-note {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 24px;
+        align-items: center;
+        margin-top: 22px;
+        padding: 20px 24px;
+        color: var(--cream);
+        background: var(--forest);
+      }
+      .cache-note strong { color: var(--acid); font: 400 24px/1 var(--display); }
+      .cache-note p { margin: 0; font-size: 16px; }
+
+      .runtime-shell { color: var(--cream); background: var(--forest); }
+      .runtime-shell .section-label { color: var(--acid); }
+      .runtime-shell .chapter-head p { color: rgba(243, 239, 223, 0.74); }
+      .topology {
+        display: grid;
+        grid-template-columns: 1fr 70px 1.2fr 70px 1fr;
+        align-items: stretch;
+      }
+      .topology-arrow { display: grid; place-items: center; color: var(--acid); font: 400 28px/1 var(--display); }
+      .topology-group { padding: 28px; border: 1px solid rgba(243, 239, 223, 0.22); }
+      .topology-group > .tag { color: var(--acid); }
+      .topology-group h3 { margin: 18px 0 12px; font-size: 25px; }
+      .topology-group p { margin: 0; color: rgba(243, 239, 223, 0.7); font-size: 16px; }
+      .mini-service { margin-top: 17px; padding: 14px; color: var(--night); background: var(--cream); }
+      .mini-service strong { display: block; font: 600 11px/1 var(--mono); text-transform: uppercase; }
+      .mini-service span { font-size: 14px; }
+      .probe-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 30px; background: rgba(243,239,223,.22); }
+      .probe { padding: 22px; background: var(--night); }
+      .probe code { color: var(--acid); font: 600 13px/1 var(--mono); }
+      .probe p { margin: 11px 0 0; color: rgba(243,239,223,.68); font-size: 15px; }
+
+      .ship-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 70px; align-items: start; }
+      .pipeline { border-left: 2px solid var(--night); }
+      .pipeline-row { display: grid; grid-template-columns: 52px 1fr; gap: 17px; padding: 0 0 28px 25px; }
+      .pipeline-row:last-child { padding-bottom: 0; }
+      .pipeline-no { display: grid; place-items: center; width: 36px; height: 36px; margin-left: -44px; color: var(--night); background: var(--acid); border: 2px solid var(--night); border-radius: 50%; font: 600 11px/1 var(--mono); }
+      .pipeline-row h3 { margin: 3px 0 7px; }
+      .pipeline-row p { margin: 0; color: #526059; font-size: 16px; }
+      .deploy-card { padding: 34px; color: var(--cream); background: var(--night); box-shadow: 18px 18px 0 var(--leaf); }
+      .deploy-card h3 { margin: 18px 0; font-size: 28px; }
+      .deploy-card p { color: rgba(243,239,223,.7); }
+      .deploy-list { margin: 25px 0 0; padding: 0; list-style: none; }
+      .deploy-list li { display: flex; justify-content: space-between; gap: 20px; padding: 13px 0; border-top: 1px solid rgba(243,239,223,.15); font: 500 12px/1.3 var(--mono); }
+      .deploy-list span { color: var(--acid); }
+      footer { display: flex; justify-content: space-between; gap: 20px; padding: 28px max(24px, calc((100vw - 1180px) / 2)); color: rgba(243,239,223,.66); background: var(--night); font: 500 11px/1.4 var(--mono); }
+
+      .reveal { opacity: 0; transform: translateY(34px); transition: opacity .75s ease, transform .75s cubic-bezier(.2,.7,.2,1); }
+      .reveal.visible { opacity: 1; transform: none; }
+
+      @media (max-width: 900px) {
+        nav a:not(.pdf-link) { display: none; }
+        .hero, .chapter-head, .ship-grid { grid-template-columns: 1fr; }
+        .hero { min-height: auto; }
+        .flow-grid { grid-template-columns: 1fr; gap: 1px; }
+        .flow-step { min-height: auto; }
+        .flow-step::after { display: none; }
+        .flow-step h3 { margin-top: 24px; }
+        .topology { grid-template-columns: 1fr; }
+        .topology-arrow { min-height: 60px; transform: rotate(90deg); }
+        .probe-strip { grid-template-columns: 1fr; }
+      }
+      @media (max-width: 560px) {
+        section { width: min(100% - 28px, 1180px); }
+        h1 { font-size: 50px; }
+        .hero { padding-block: 64px; }
+        .chapter { padding-block: 72px; }
+        .chapter-head { gap: 24px; margin-bottom: 38px; }
+        .cache-note { grid-template-columns: 1fr; }
+        footer { flex-direction: column; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .reveal { opacity: 1; transform: none; transition: none; }
+      }
+
+      @media print {
+        @page { size: A4; margin: 10mm 11mm; }
+        * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+        html, body { width: 100%; background: white; font-size: 9.4pt; line-height: 1.32; }
+        body::before, .progress, .topbar, footer { display: none !important; }
+        section { width: 100%; }
+        .reveal { opacity: 1 !important; transform: none !important; }
+        .hero-shell { background: var(--night); }
+        .hero-shell::after { opacity: .45; }
+        .hero { grid-template-columns: 1.45fr .55fr; gap: 8mm; min-height: auto; padding: 11mm 10mm; }
+        h1 { margin: 3mm 0 4mm; font-size: 34pt; line-height: .9; }
+        .lede { margin-bottom: 0; font-size: 12pt; }
+        .hero-actions { margin-top: 5mm; }
+        .button { min-height: 8mm; padding: 0 3mm; font-size: 7pt; }
+        .hero-aside { padding: 5mm; }
+        .hero-aside > p { display: none; }
+        .fact { padding: 2.5mm 0; }
+        .fact strong { font-size: 17pt; }
+        .chapter { padding-block: 9mm; }
+        .chapter-head { grid-template-columns: .7fr 1.3fr; gap: 8mm; margin-bottom: 6mm; }
+        .chapter-head h2 { margin-bottom: 0; font-size: 25pt; }
+        .chapter-head p { margin-bottom: 0; font-size: 10.5pt; }
+        .flow-grid { grid-template-columns: repeat(5, 1fr); }
+        .flow-step { min-height: 42mm; padding: 4mm 3mm; }
+        .flow-step::after { top: 4mm; width: 5mm; height: 5mm; right: -2.5mm; font-size: 7pt; }
+        .flow-step h3 { margin: 8mm 0 2mm; font-size: 11pt; }
+        .flow-step p { font-size: 8pt; line-height: 1.3; }
+        .cache-note { margin-top: 4mm; padding: 3mm 4mm; gap: 4mm; }
+        .cache-note strong { font-size: 12pt; }
+        .cache-note p { font-size: 8pt; }
+        #runtime { break-before: page; page-break-before: always; }
+        .runtime-shell .chapter { padding-block: 9mm 7mm; }
+        .topology { grid-template-columns: 1fr 10mm 1.2fr 10mm 1fr; }
+        .topology-group { padding: 4mm; }
+        .topology-group h3 { margin: 3mm 0 2mm; font-size: 12pt; }
+        .topology-group p { font-size: 8pt; }
+        .mini-service { margin-top: 3mm; padding: 2.5mm; }
+        .mini-service span { font-size: 7.5pt; }
+        .probe-strip { margin-top: 4mm; }
+        .probe { padding: 3mm; }
+        .probe p { margin-top: 2mm; font-size: 7.5pt; }
+        #shipping { padding-block: 8mm 0; }
+        #shipping .chapter-head { margin-bottom: 5mm; }
+        .ship-grid { grid-template-columns: 1.1fr .9fr; gap: 8mm; }
+        .pipeline { margin-left: 3mm; }
+        .pipeline-row { grid-template-columns: 9mm 1fr; gap: 2mm; padding: 0 0 3mm 5mm; }
+        .pipeline-no { width: 7mm; height: 7mm; margin-left: -9mm; font-size: 6pt; }
+        .pipeline-row h3 { margin: 1mm 0; font-size: 10pt; }
+        .pipeline-row p { font-size: 7.5pt; }
+        .deploy-card { padding: 5mm; box-shadow: 3mm 3mm 0 var(--leaf); }
+        .deploy-card h3 { margin: 3mm 0; font-size: 14pt; }
+        .deploy-card p { font-size: 8pt; }
+        .deploy-list { margin-top: 3mm; }
+        .deploy-list li { padding: 2mm 0; font-size: 6.8pt; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="progress" aria-hidden="true"></div>
+    <header class="topbar">
+      <a class="brand" href="#top"><span class="brand-mark">HB</span> HiveBox / project brief</a>
+      <nav aria-label="Project guide">
+        <a href="#workflow">Workflow</a>
+        <a href="#runtime">Runtime</a>
+        <a href="#shipping">Delivery</a>
+        <a class="pdf-link" href="HiveBox_Project_Guide.pdf" download>2-page PDF</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <div class="hero-shell">
+        <section class="hero">
+          <div class="hero-copy reveal">
+            <span class="eyebrow">DevOps learning project · v0.0.1</span>
+            <h1>Weather data.<br /><em>Production</em><br />thinking.</h1>
+            <p class="lede muted">
+              HiveBox turns openSenseMap sensor readings into a searchable web experience, then wraps it in caching, background storage, containers, health checks, CI and Kubernetes.
+            </p>
+            <div class="hero-actions">
+              <a class="button primary" href="https://github.com/JNasri/devops-hands-on-project-hivebox" target="_blank" rel="noreferrer">View GitHub repository ↗</a>
+              <a class="button" href="#workflow">See the workflow ↓</a>
+            </div>
+          </div>
+          <aside class="hero-aside reveal" aria-label="Project summary">
+            <p>A compact system built to practice the path from source code to a monitored workload.</p>
+            <div class="fact"><strong>4</strong><span>local services</span></div>
+            <div class="fact"><strong>3</strong><span>operational endpoints</span></div>
+            <div class="fact"><strong>1</strong><span>reusable app image</span></div>
+          </aside>
+        </section>
+      </div>
+
+      <section id="workflow" class="chapter">
+        <div class="chapter-head reveal">
+          <div><span class="section-label">01 / data path</span><h2>From place name to observation.</h2></div>
+          <p>The API accepts a location instead of forcing users to know sensor IDs. It resolves the place, finds nearby openSenseMap stations, normalizes their temperature measurements and returns a small, consistent response.</p>
+        </div>
+        <div class="flow-grid reveal" aria-label="Request workflow">
+          <article class="flow-step"><span class="step-no">01</span><h3>User searches</h3><p>The browser sends a country, city or region to the Flask API.</p></article>
+          <article class="flow-step"><span class="step-no">02</span><h3>Resolve bounds</h3><p>Nominatim translates that name into a geographic bounding box.</p></article>
+          <article class="flow-step"><span class="step-no">03</span><h3>Fetch sensors</h3><p>openSenseMap returns readings found inside those bounds.</p></article>
+          <article class="flow-step"><span class="step-no">04</span><h3>Normalize</h3><p>The API handles temperature labels, units and invalid readings.</p></article>
+          <article class="flow-step"><span class="step-no">05</span><h3>Respond</h3><p>The frontend renders the latest usable observations and summary.</p></article>
+        </div>
+        <div class="cache-note reveal"><strong>Valkey first</strong><p>Repeated searches use the five-minute cache. A cache miss triggers the upstream APIs and stores the new response.</p><span class="tag">less latency · less load</span></div>
+      </section>
+
+      <div class="runtime-shell">
+        <section id="runtime" class="chapter">
+          <div class="chapter-head reveal">
+            <div><span class="section-label">02 / runtime</span><h2>One image. Separate jobs.</h2></div>
+            <p>Docker builds the Python application once. Compose or Kubernetes starts that same image as an HTTP API and as a periodic worker, alongside Valkey for caching and MinIO for object storage.</p>
+          </div>
+          <div class="topology reveal" aria-label="Runtime architecture">
+            <article class="topology-group"><span class="tag">traffic</span><h3>Browser / client</h3><p>Calls the public API through port mapping locally or Ingress in Kubernetes.</p></article>
+            <div class="topology-arrow" aria-hidden="true">→</div>
+            <article class="topology-group"><span class="tag">same image</span><h3>API + worker</h3><p>Gunicorn serves Flask. A second process runs <code>python main.py worker</code>.</p><div class="mini-service"><strong>worker cycle</strong><span>fetch → cache → archive every 5 min</span></div></article>
+            <div class="topology-arrow" aria-hidden="true">→</div>
+            <article class="topology-group"><span class="tag">state</span><h3>Valkey + MinIO</h3><p>Valkey holds short-lived JSON. MinIO keeps timestamped snapshots outside the app container.</p></article>
+          </div>
+          <div class="probe-strip reveal">
+            <article class="probe"><code>GET /healthz</code><p>Is the process alive? No dependency checks.</p></article>
+            <article class="probe"><code>GET /readyz</code><p>Can it safely receive traffic under the project’s majority-and-cache rule?</p></article>
+            <article class="probe"><code>GET /metrics</code><p>Expose request and process signals for monitoring.</p></article>
+          </div>
+        </section>
+      </div>
+
+      <section id="shipping" class="chapter">
+        <div class="chapter-head reveal">
+          <div><span class="section-label">03 / delivery</span><h2>Prove it, then ship it.</h2></div>
+          <p>Every push follows the same quality gate. Local Compose makes the full system easy to reproduce; Kind tests orchestration concepts before the image is deployed to a public container platform.</p>
+        </div>
+        <div class="ship-grid">
+          <div class="pipeline reveal" aria-label="Continuous integration pipeline">
+            <article class="pipeline-row"><span class="pipeline-no">01</span><div><h3>Lint + test</h3><p>Ruff checks Python and Pytest protects API behavior.</p></div></article>
+            <article class="pipeline-row"><span class="pipeline-no">02</span><div><h3>Scan manifests</h3><p>Terrascan catches risky Kubernetes configuration.</p></div></article>
+            <article class="pipeline-row"><span class="pipeline-no">03</span><div><h3>Build image</h3><p>CI creates exactly what will run in production.</p></div></article>
+            <article class="pipeline-row"><span class="pipeline-no">04</span><div><h3>Smoke test</h3><p>A real container starts and must answer <code>/healthz</code>.</p></div></article>
+          </div>
+          <aside class="deploy-card reveal">
+            <span class="tag">public deployment</span>
+            <h3>Keep the architecture; swap the state.</h3>
+            <p>Run the image on a managed container service. Replace local Valkey and MinIO with managed Redis-compatible cache and S3 object storage. Keep secrets private and place HTTPS in front.</p>
+            <ul class="deploy-list">
+              <li>APPLICATION <span>container service</span></li>
+              <li>CACHE <span>managed Valkey/Redis</span></li>
+              <li>ARCHIVE <span>S3-compatible bucket</span></li>
+              <li>EDGE <span>DNS + TLS + rate limits</span></li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>Designed and built by Josef Nasri</span>
+      <span>Flask · Docker · Valkey · MinIO · Kubernetes · GitHub Actions</span>
+    </footer>
+
+    <script>
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const reveals = document.querySelectorAll(".reveal");
+      const progress = document.querySelector(".progress");
+      const links = [...document.querySelectorAll("nav a[href^='#']")];
+      const sections = links.map((link) => document.querySelector(link.getAttribute("href"))).filter(Boolean);
+
+      if (reducedMotion || !("IntersectionObserver" in window)) {
+        reveals.forEach((item) => item.classList.add("visible"));
+      } else {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.13 });
+        reveals.forEach((item) => observer.observe(item));
+      }
+
+      function updatePageState() {
+        const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+        progress.style.width = `${scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0}%`;
+        let current = "";
+        sections.forEach((section) => {
+          if (section.getBoundingClientRect().top <= 150) current = section.id;
+        });
+        links.forEach((link) => link.classList.toggle("active", link.getAttribute("href") === `#${current}`));
+      }
+      window.addEventListener("scroll", updatePageState, { passive: true });
+      updatePageState();
+    </script>
+  </body>
+</html>
