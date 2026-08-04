@@ -1,0 +1,62 @@
+services:
+  api:
+    build: .
+    ports:
+      - "127.0.0.1:5000:5000"
+    env_file:
+      - .env
+    environment:
+      VALKEY_URL: redis://valkey:6379
+      MINIO_ENDPOINT: minio:9000
+    depends_on:
+      valkey:
+        condition: service_healthy
+      minio:
+        condition: service_started
+    restart: unless-stopped
+
+  worker:
+    build: .
+    command: ["python", "main.py", "worker"]
+    healthcheck:
+      disable: true
+    env_file:
+      - .env
+    environment:
+      VALKEY_URL: redis://valkey:6379
+      MINIO_ENDPOINT: minio:9000
+    depends_on:
+      valkey:
+        condition: service_healthy
+      minio:
+        condition: service_started
+    restart: unless-stopped
+
+  valkey:
+    image: valkey/valkey:9.1.1-alpine
+    command: ["valkey-server", "--appendonly", "yes"]
+    volumes:
+      - valkey-data:/data
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  minio:
+    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z.hotfix.7aa24e772
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - minio-data:/data
+    restart: unless-stopped
+
+volumes:
+  valkey-data:
+  minio-data:

@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Explore recent environmental temperature observations from the openSenseMap network."
+    >
+    <title>HiveBox — Field Temperature Explorer</title>
+    <link rel="icon" href="data:,">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:opsz,wght@9..144,500;9..144,650;9..144,750&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="HiveBox home">
+        <span class="brand-mark" aria-hidden="true">HB</span>
+        <span>HiveBox</span>
+      </a>
+      <div class="system-state">
+        <span class="state-dot" aria-hidden="true"></span>
+        <span id="system-state">Checking API</span>
+        <span class="version">v{{ version }}</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Open environmental intelligence</p>
+          <h1>Read the weather<br>like a <em>beekeeper.</em></h1>
+          <p class="intro">
+            Search a place, choose a field radius, and inspect the freshest
+            temperature observations reported by nearby openSenseMap sensors.
+          </p>
+        </div>
+        <div class="hero-orbit" aria-hidden="true">
+          <span class="orbit-ring"></span>
+          <span class="orbit-cell cell-one"></span>
+          <span class="orbit-cell cell-two"></span>
+          <span class="orbit-cell cell-three"></span>
+          <span class="orbit-label">LIVE<br>FIELD<br>DATA</span>
+        </div>
+      </section>
+
+      <section class="explorer" aria-labelledby="explorer-title">
+        <div class="search-panel">
+          <div class="section-number">01</div>
+          <div class="panel-heading">
+            <p class="kicker">Choose a field</p>
+            <h2 id="explorer-title">Where should we listen?</h2>
+          </div>
+
+          <form id="region-form" class="region-form">
+            <label for="region-query">City, region, or country</label>
+            <div class="search-row">
+              <input
+                id="region-query"
+                name="q"
+                type="search"
+                minlength="2"
+                maxlength="120"
+                placeholder="Try Berlin, Nairobi, or Kyoto"
+                autocomplete="off"
+                required
+              >
+              <button type="submit">
+                <span>Find region</span>
+                <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+            <p class="form-note">
+              Search runs only when submitted. Location data © OpenStreetMap contributors.
+            </p>
+          </form>
+
+          <div id="search-feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div id="region-results" class="region-results" aria-label="Location results"></div>
+        </div>
+
+        <aside class="radius-panel">
+          <div>
+            <p class="kicker">Field radius</p>
+            <output id="radius-output" for="radius">10 km</output>
+          </div>
+          <input id="radius" type="range" min="5" max="50" step="5" value="10">
+          <div class="range-labels" aria-hidden="true">
+            <span>5 km</span>
+            <span>50 km</span>
+          </div>
+          <p>
+            A smaller radius is faster and gives a more local reading. Increase
+            it when an area has few sensors. Country and large-region searches
+            use a bounded representative area instead.
+          </p>
+        </aside>
+      </section>
+
+      <section id="reading" class="reading" aria-labelledby="reading-title" aria-busy="false">
+        <div class="reading-header">
+          <div>
+            <p class="kicker">Latest observation</p>
+            <h2 id="reading-title">Select a region to begin</h2>
+          </div>
+          <span id="cache-badge" class="cache-badge" hidden>Fresh fetch</span>
+        </div>
+
+        <div class="reading-body">
+          <div id="reading-loader" class="reading-loader" role="status" aria-live="polite" hidden>
+            <div class="loader-radar" aria-hidden="true"><span></span></div>
+            <div>
+              <strong>Scanning the field</strong>
+              <p>Checking Valkey and listening for nearby sensors…</p>
+            </div>
+          </div>
+
+          <div class="reading-grid">
+            <article class="temperature-card">
+              <span class="card-label">Average temperature</span>
+              <div class="temperature-value">
+                <strong id="temperature-value">—</strong>
+                <span id="temperature-unit">°C</span>
+              </div>
+              <p id="temperature-status" class="temperature-status">Waiting for a field reading</p>
+            </article>
+
+            <article class="data-card">
+              <span class="card-label">Active sensors</span>
+              <strong id="sensor-count">—</strong>
+              <p>Latest valid reading from each sensor</p>
+            </article>
+
+            <article class="data-card">
+              <span class="card-label">Search radius</span>
+              <strong id="selected-radius">—</strong>
+              <p id="observation-time">No observation requested</p>
+            </article>
+          </div>
+        </div>
+
+        <div id="reading-feedback" class="feedback reading-feedback" role="status" aria-live="polite"></div>
+      </section>
+
+      <section class="pipeline" aria-labelledby="pipeline-title">
+        <div class="section-number">02</div>
+        <div>
+          <p class="kicker">Under the surface</p>
+          <h2 id="pipeline-title">One request, an observable pipeline.</h2>
+        </div>
+        <ol class="pipeline-list">
+          <li><span>01</span><strong>Locate</strong><small>Nominatim geocoding</small></li>
+          <li><span>02</span><strong>Measure</strong><small>openSenseMap sensors</small></li>
+          <li><span>03</span><strong>Cache</strong><small>Valkey, five minutes</small></li>
+          <li><span>04</span><strong>Archive</strong><small>S3-compatible storage</small></li>
+        </ol>
+      </section>
+    </main>
+
+    <footer>
+      <p>HiveBox turns public sensor readings into a small, observable DevOps system.</p>
+      <div>
+        <a href="https://opensensemap.org/" target="_blank" rel="noreferrer">openSenseMap</a>
+        <a href="/metrics">Metrics</a>
+        <a href="/readyz">Readiness</a>
+      </div>
+    </footer>
+  </body>
+</html>

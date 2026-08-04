@@ -1,5 +1,7 @@
 Flask==3.0.3
+gunicorn==23.0.0
 requests==2.32.3
-pytest==8.3.4
 python-dotenv==1.0.1
 prometheus-client==0.20.0
+minio==7.2.1
+redis==5.2.1

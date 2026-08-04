@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hivebox-config
+data:
+  LOG_LEVEL: "INFO"
+  APP_TRUST_PROXY: "true"
+  API_RATE_LIMIT_PER_MINUTE: "60"
+  STORE_INTERVAL_SECONDS: "300"
+  TEMPERATURE_API_URL: "https://api.opensensemap.org/boxes/data"
+  TEMPERATURE_PHENOMENA: "Temperatur,Temperature,Temperatura,Température,Lufttemperatur"
+  TEMPERATURE_BBOX: "5.5,47.2,15.2,55.1"
+  TEMPERATURE_SENSEBOX_IDS: "5eba5fbad46fb8001b799786,5c21ff8f919bf8001adf2488,5ade1acf223bd80019a1011c"
+  TEMPERATURE_REQUEST_TIMEOUT: "15"
+  TEMPERATURE_UNIT: "°C"
+  READYZ_REQUEST_TIMEOUT: "2"
+  NOMINATIM_API_URL: "https://nominatim.openstreetmap.org/search"
+  NOMINATIM_USER_AGENT: "HiveBox/0.0.1 (replace-with-your-public-repository-url)"
+  VALKEY_URL: "redis://valkey:6379"
+  MINIO_ENDPOINT: "minio:9000"
+  MINIO_BUCKET: "hivebox"
+  MINIO_SECURE: "false"
