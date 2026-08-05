@@ -56,7 +56,7 @@ config = {**dotenv_config, **env_config}
 app = Flask(__name__)
 if config.get("APP_TRUST_PROXY", "false").lower() in {"1", "true", "yes"}:
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
-__version__ = "0.0.1"
+__version__ = "1.0.0"
 
 cache = Redis.from_url(
     config.get("VALKEY_URL", "redis://localhost:6379"),
