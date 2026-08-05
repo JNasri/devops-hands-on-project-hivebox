@@ -54,4 +54,4 @@ jobs:
             fi
             sleep 2
           done
-          curl --fail --silent http://127.0.0.1:5001/version | grep --fixed-strings --line-regexp "0.0.1"
+          curl --fail --silent http://127.0.0.1:5001/version | grep --fixed-strings --line-regexp "1.0.0"
