@@ -1,12 +1,43 @@
-# HiveBox
+# 🐝 HiveBox
 
-HiveBox is a public temperature explorer and an end-to-end DevOps learning
-project. It turns recent [openSenseMap](https://opensensemap.org/) measurements
-into a location-based web experience, caches results in Valkey, and archives
-periodic snapshots in S3-compatible MinIO storage.
+> 🌍 A location-based temperature explorer built as an end-to-end DevOps
+> learning project.
 
-The original roadmap endpoints remain available, while the public API adds a
-safe, bounded city/region workflow.
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.0-000000?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-Ready-326CE5?logo=kubernetes&logoColor=white)](https://kubernetes.io/)
+[![CI](https://img.shields.io/badge/GitHub_Actions-CI-2088FF?logo=githubactions&logoColor=white)](https://github.com/JNasri/devops-hands-on-project-hivebox/actions)
+[![Version](https://img.shields.io/badge/version-1.0.0-2E7D32)](https://github.com/JNasri/devops-hands-on-project-hivebox)
+
+## 👋 Welcome
+
+Welcome to **HiveBox**! This project turns recent
+[openSenseMap](https://opensensemap.org/) sensor measurements into a searchable
+web experience. Enter a city, region, or country to discover nearby temperature
+observations through a responsive public dashboard.
+
+Behind the interface, HiveBox resolves locations with Nominatim/OpenStreetMap,
+caches responses in Valkey, and archives periodic snapshots in S3-compatible
+MinIO storage. The original roadmap endpoints remain available alongside the
+safe, bounded region-search API.
+
+### 🚀 Try the public app
+
+**[Open the live HiveBox dashboard →](https://devops-hands-on-project-hivebox-cvpmex.cranl.net)**
+
+[Quick start](#run-the-complete-project-locally) ·
+[API endpoints](#public-api) ·
+[Architecture](#current-architecture) ·
+[Project roadmap](https://devopsroadmap.io/projects/hivebox/)
+
+### ✨ What you can explore
+
+- 🔎 Search by city, region, or country.
+- 🌡️ View recent temperature readings and a regional average.
+- ⚡ Reuse five-minute cached responses for quicker repeat requests.
+- 📦 Store timestamped sensor snapshots in S3-compatible object storage.
+- 📊 Inspect health, readiness, version, and Prometheus metrics endpoints.
 
 ## Current architecture
 
